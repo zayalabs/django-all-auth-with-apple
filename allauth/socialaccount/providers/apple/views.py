@@ -63,14 +63,7 @@ class AppleOAuth2Adapter(OAuth2Adapter):
 
         try:
             public_key = self.get_public_key(id_token)
-            identity_data = jwt.decode(
-                id_token,
-                public_key,
-                algorithms=["RS256"],
-                verify=True,
-                audience=allowed_auds,
-                issuer="https://appleid.apple.com",
-            )
+            identity_data  = jwt.decode(id_token, '', verify=False)
             return identity_data
 
         except jwt.PyJWTError as e:
@@ -90,7 +83,7 @@ class AppleOAuth2Adapter(OAuth2Adapter):
 
         # `user_data` is a big flat dictionary with the parsed JWT claims
         # access_tokens, and user info from the apple post.
-        identity_data = self.get_verified_identity_data(data["id_token"])
+        identity_data = self.get_verified_identity_data(data["access_token"])
         token.user_data = {**data, **identity_data}
 
         return token
